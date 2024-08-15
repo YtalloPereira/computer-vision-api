@@ -22,6 +22,10 @@ provider:
         - logs:CreateLogStream
         - logs:PutLogEvents
       Resource: "*"
+    - Effect: Allow
+      Action:
+        - bedrock:InvokeModel
+      Resource: "*"
 
 functions:
   health:
