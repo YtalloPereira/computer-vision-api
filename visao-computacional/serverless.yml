@@ -16,6 +16,12 @@ provider:
         - rekognition:DetectFaces
         - rekognition:DetectLabels
       Resource: "*"
+    - Effect: Allow
+      Action:
+        - logs:CreateLogGroup
+        - logs:CreateLogStream
+        - logs:PutLogEvents
+      Resource: "*"
 
 functions:
   health:
