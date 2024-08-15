@@ -11,6 +11,11 @@ provider:
         - s3:GetObject
       Resource: 
         - arn:aws:s3:::myphotos/*
+    - Effect: Allow
+      Action:
+        - rekognition:DetectFaces
+        - rekognition:DetectLabels
+      Resource: "*"
 
 functions:
   health:
