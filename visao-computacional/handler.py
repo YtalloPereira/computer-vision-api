@@ -1,4 +1,8 @@
 import json
+import boto3
+
+
+rekognition = boto3.client('rekognition')
 
 
 def health(event, context):
@@ -35,15 +39,35 @@ def face_emotion_analysis_v1(event, context):
         bucket = body.get('bucket')
         image_name = body.get('imageName')
 
-        # Adicionar lógica para chamada ao Rekognition e processamento da resposta;
-        # obter a lista de faces detectadas; lógica para processar o Rekognition e preencher a lista `faces.
+        # Construir a URL da imagem no formato padrão do S3
+        image_url = f"https://{bucket}.s3.amazonaws.com/{image_name}"
 
-        faces = [] 
+        # Chamada ao Rekognition para detectar faces na imagem
+        response = rekognition.detect_faces(
+            Image={'S3Object': {'Bucket': bucket, 'Name': image_name}},
+            Attributes=['ALL']
+        )
 
+        # Log da resposta do Rekognition
+        print(response)
+
+        faces = []
+
+        for faceDetail in response['FaceDetails']:
+            faces.append({
+                "position": {
+                    "Height": faceDetail['BoundingBox']['Height'],
+                    "Left": faceDetail['BoundingBox']['Left'],
+                    "Top": faceDetail['BoundingBox']['Top'],
+                    "Width": faceDetail['BoundingBox']['Width']
+                },
+                "classified_emotion": max(faceDetail['Emotions'], key=lambda e: e['Confidence'])['Type'],
+                "classified_emotion_confidence": max(faceDetail['Emotions'], key=lambda e: e['Confidence'])['Confidence']
+            })
 
         if not faces:
             response_body = {
-                "url_to_image": f"https://{bucket}/{image_name}",
+                "url_to_image": image_url,
                 "created_image": "02-02-2023 17:00:00",
                 "faces": [
                     {
@@ -60,7 +84,7 @@ def face_emotion_analysis_v1(event, context):
             }
         else:
             response_body = {
-                "url_to_image": f"https://{bucket}/{image_name}",
+                "url_to_image": image_url,
                 "created_image": "02-02-2023 17:00:00",
                 "faces": faces  # lista de faces detectadas
             }
