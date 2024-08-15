@@ -37,3 +37,9 @@ functions:
       - httpApi:
           path: /v2/vision
           method: post
+resources:
+  Resources:
+    MyBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: myphotos
