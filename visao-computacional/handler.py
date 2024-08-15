@@ -81,3 +81,59 @@ def face_emotion_analysis_v1(event, context):
         }
 
     return response
+
+def face_and_pet_analysis_v2(event, context):
+    try:
+        body = json.loads(event['body'])
+        bucket = body.get('bucket')
+        image_name = body.get('imageName')
+
+        # Adicionar lógica para chamada ao Rekognition para detectar pets e faces;
+        # Processar a resposta do Rekognition e preencher a lista `faces` e `pets`.
+        
+        faces = []  # Lista de faces detectadas
+        pets = []   # Lista de pets detectados
+
+        # exemplo do readme do projeto
+        if not faces and not pets:
+            response_body = {
+                "url_to_image": f"https://{bucket}/{image_name}",
+                "created_image": "02-02-2023 17:00:00",
+                "faces": [
+                    {
+                        "position": {
+                            "Height": None,
+                            "Left": None,
+                            "Top": None,
+                            "Width": None
+                        },
+                        "classified_emotion": None,
+                        "classified_emotion_confidence": None
+                    }
+                ],
+                "pets": []
+            }
+        else:
+            response_body = {
+                "url_to_image": f"https://{bucket}/{image_name}",
+                "created_image": "02-02-2023 17:00:00",
+                "faces": faces,
+                "pets": pets
+            }
+
+        response = {
+            "statusCode": 200,
+            "body": json.dumps(response_body)
+        }
+    except Exception as e:
+        response = {
+            "statusCode": 500,
+            "body": json.dumps(
+                {
+                    "message": "Erro ao processar a solicitação.",
+                    "error": str(e)
+                }
+            )
+        }
+
+    return response
