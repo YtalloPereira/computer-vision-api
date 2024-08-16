@@ -115,6 +115,9 @@ def face_and_pet_analysis_v2(event, context):
         bucket = body.get('bucket')
         image_name = body.get('imageName')
 
+        # Obter o horário atual
+        created_image_time = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+
         # Adicionar lógica para chamada ao Rekognition para detectar pets e faces;
         # Processar a resposta do Rekognition e preencher a lista `faces` e `pets`.
         
@@ -125,7 +128,7 @@ def face_and_pet_analysis_v2(event, context):
         if not faces and not pets:
             response_body = {
                 "url_to_image": f"https://{bucket}/{image_name}",
-                "created_image": "02-02-2023 17:00:00",
+                "created_image": created_image_time,
                 "faces": [
                     {
                         "position": {
@@ -143,7 +146,7 @@ def face_and_pet_analysis_v2(event, context):
         else:
             response_body = {
                 "url_to_image": f"https://{bucket}/{image_name}",
-                "created_image": "02-02-2023 17:00:00",
+                "created_image": created_image_time,
                 "faces": faces,
                 "pets": pets
             }
