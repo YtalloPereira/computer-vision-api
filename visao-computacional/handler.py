@@ -1,6 +1,6 @@
 import json
 import boto3
-
+from datetime import datetime
 
 rekognition = boto3.client('rekognition')
 
@@ -38,6 +38,9 @@ def face_emotion_analysis_v1(event, context):
         body = json.loads(event['body'])
         bucket = body.get('bucket')
         image_name = body.get('imageName')
+        
+        # Obter o horário atual
+        created_image_time = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
 
         # Construir a URL da imagem no formato padrão do S3
         image_url = f"https://{bucket}.s3.amazonaws.com/{image_name}"
@@ -68,7 +71,7 @@ def face_emotion_analysis_v1(event, context):
         if not faces:
             response_body = {
                 "url_to_image": image_url,
-                "created_image": "02-02-2023 17:00:00",
+                "created_image": created_image_time,
                 "faces": [
                     {
                         "position": {
@@ -85,7 +88,7 @@ def face_emotion_analysis_v1(event, context):
         else:
             response_body = {
                 "url_to_image": image_url,
-                "created_image": "02-02-2023 17:00:00",
+                "created_image": created_image_time,
                 "faces": faces  # lista de faces detectadas
             }
 
