@@ -3,7 +3,7 @@ import boto3
 from datetime import datetime
 
 rekognition = boto3.client('rekognition')
-
+bedrock = boto3.client('bedrock')
 
 def health(event, context):
     body = {
