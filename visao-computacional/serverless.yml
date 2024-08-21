@@ -1,5 +1,7 @@
+app: visao-computacional
 service: vision
 frameworkVersion: '4'
+org: #sua org aqui
 
 provider:
   name: aws
@@ -10,7 +12,7 @@ provider:
       Action:
         - s3:GetObject
       Resource: 
-        - arn:aws:s3:::myphotos/*
+        - arn:aws:s3:::/* #depois dos pontos digite o nome de sua bucket
     - Effect: Allow
       Action:
         - rekognition:DetectFaces
@@ -54,6 +56,7 @@ functions:
           method: post
   faceAndPetAnalysisV2:
     handler: handler.face_and_pet_analysis_v2
+    timeout: 30
     events:
       - httpApi:
           path: /v2/vision
@@ -63,4 +66,4 @@ resources:
     MyBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: myphotos
+        BucketName: # sua bucket aqui
