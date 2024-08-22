@@ -42,8 +42,9 @@ def face_emotion_analysis_v1(event, context):
         bucket = body.get('bucket')
         image_name = body.get('imageName')
         
-        # Obter o horário atual
-        created_image_time = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+        # Obter a data de criação do objeto no S3
+        s3_response = s3.head_object(Bucket=bucket, Key=image_name)
+        created_image_time = s3_response['LastModified'].strftime("%d-%m-%Y %H:%M:%S")
 
         # Construir a URL da imagem no formato padrão do S3
         image_url = f"https://{bucket}.s3.amazonaws.com/{image_name}"
