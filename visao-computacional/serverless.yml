@@ -1,18 +1,21 @@
-app: visao-computacional
+plugins:
+  - serverless-dotenv-plugin
+
+app: ${env:APP_NAME}
 service: vision
 frameworkVersion: '4'
-org: #sua org aqui
+org: ${env:ORG_NAME}
 
 provider:
   name: aws
   runtime: python3.12
-  region: us-east-1
+  region: ${env:REGION}
   iamRoleStatements:
     - Effect: Allow
       Action:
         - s3:GetObject
-      Resource: 
-        - arn:aws:s3:::/* #depois dos pontos digite o nome de sua bucket
+      Resource:
+        - arn:aws:s3:::${env:BUCKET_NAME}/*
     - Effect: Allow
       Action:
         - rekognition:DetectFaces
@@ -61,9 +64,10 @@ functions:
       - httpApi:
           path: /v2/vision
           method: post
+
 resources:
   Resources:
     MyBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: # sua bucket aqui
+        BucketName: ${env:BUCKET_NAME}
