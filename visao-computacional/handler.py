@@ -169,8 +169,10 @@ def face_and_pet_analysis_v2(event, context):
 
         # Processameto os pets detectados
         pets = []
+        pet_labels = ["Dog", "Cat", "Bird"]  # Labels de interesse
         for label in rekognition_labels_response['Labels']:
-            pets.append({
+            if label['Name'] in pet_labels:
+                pets.append({
                 "Confidence": label['Confidence'],
                 "Name": label['Name']
             })
@@ -188,7 +190,7 @@ def face_and_pet_analysis_v2(event, context):
             pet_names = ', '.join([pet['Name'] for pet in pets if pet['Name'] is not None])
             prompt = (
                 f"Gerar dicas detalhadas sobre cuidados para {pet_names}, incluindo informações sobre nível de energia, "
-                "necessidades de exercícios, temperamento, comportamento, cuidados necessários, e problemas de saúde comuns."
+                "necessidades de exercícios, temperamento, comportamento, cuidados necessários, e problemas de saúde comuns. Traduza tudo para português brasileiro"
             )
 
             native_request = {
