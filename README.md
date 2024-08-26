@@ -20,142 +20,224 @@ Análise de Emoções Faciais e Detecção de Animais (v2):
 ### 1. Clonando o Repositório
 Clone o repositório do projeto para o seu ambiente local usando o comando
  bash
-git clone https://github.com/Compass-pb-aws-2024-MAIO-A/sprint-8-pb-aws-maio.git
-git checkout grupo-6
+git clone https://github.com/Compass-pb-aws-2024-MAIO-A/sprint-8-pb-aws-maio
+
 
 
 ### 2. Instalação do Serverless Framework
-
+no terminal, utilize o comando
 npm install -g serverless
 
 ### 3. Configuração das Credenciais AWS
 
-Configure suas credenciais AWS. Você pode usar o Serverless Framework ou a AWS CLI.
+```bash 
+serverless config credentials \ 
+   --provider aws \ 
+   --key AKIAIOSFODNN7EXAMPLE \ 
+   --secret wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY 
+``` 
+### 4. Criação do arquivo '.env'
 
-**Usando Serverless Framework:**
-```bash
-serverless config credentials \
-  --provider aws \
-  --key AKIAIOSFODNN7EXAMPLE \
-  --secret wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-```
+Após configurar as credenciais da AWS, crie um arquivo .env na pasta raiz do projeto. Este arquivo será usado para armazenar as variáveis de ambiente necessárias para o funcionamento da aplicação.
 
-**Usando AWS CLI:**
+No terminal, execute:
 ```bash
-aws configure
-```
+touch visao-computacional/.env
+``` 
+Abra o arquivo .env em um editor de texto e adicione as seguintes variáveis:
+
+```bash
+REGION= #Região de onde deverá ser feito o deploy
+BUCKET_NAME= #Nome da Bucket que contém as imagens que serão utilizadas
+APP_NAME= #Nome do app no serverless
+ORG_NAME= #Nome da Org do serverless
+``` 
+
 
 ### 4. Deploy da Aplicação
 
-Para implantar a aplicação na AWS, execute:
+Para efetuar o deploy da solução na sua conta aws execute (acesse a pasta [visao-computacional](./visao-computacional) ):
+  
 ```bash
-serverless deploy
+serverless deploy 
 ```
+  
+Depois de efetuar o deploy, vocẽ terá um retorno parecido com isso: 
+  
+```bash
 
-Após o deploy, você verá os endpoints gerados e outros detalhes importantes.
+DOTENV: Loading environment variables from .env:
+
+         - REGION
+
+         - BUCKET_NAME
+
+         - APP_NAME
+
+         - ORG_NAME
+
+Deploying "vision" to stage "dev" (us-east-1)
+
+[!] Function (faceAndPetAnalysisV2) timeout setting (30) may not provide enough room to process an HTTP API request (of which timeout is limited to 30s). This may introduce a situation where endpoint times out for a successful lambda invocation.
+
+✔ Service deployed to stack vision-dev (54s)
+
+endpoints:
+  GET - https://xxxxxxxxxx.execute-api.us-east-1.amazonaws.com/
+  GET - https://xxxxxxxxxx.execute-api.us-east-1.amazonaws.com/v1
+  GET - https://xxxxxxxxxx.execute-api.us-east-1.amazonaws.com/v2
+  POST - https://xxxxxxxxxx.execute-api.us-east-1.amazonaws.com/v1/vision
+  POST - https://xxxxxxxxxx.execute-api.us-east-1.amazonaws.com/v2/vision
+functions:
+  health: vision-dev-health (44 MB)
+  v1Description: vision-dev-v1Description (44 MB)
+  v2Description: vision-dev-v2Description (44 MB)
+  faceEmotionAnalysisV1: vision-dev-faceEmotionAnalysisV1 (44 MB)
+  faceAndPetAnalysisV2: vision-dev-faceAndPetAnalysisV2 (44 MB)
+```
 
 ## Endpoints
 
-### Rotas Base
-
-- **GET /**: Retorna uma mensagem de confirmação de que a função Lambda está funcionando.
-  - **Resposta Esperada:**
-    ```json
-    { 
-      "message": "Go Serverless v3.0! Your function executed successfully!", 
-      "input": { ... }
-    }
-    ```
-  - **Status Code**: 200
-
-- **GET /v1**: Retorna uma mensagem de versão da API.
-  - **Resposta Esperada:**
-    ```json
-    { "message": "VISION api version 1." }
-    ```
-  - **Status Code**: 200
-
-- **GET /v2**: Retorna uma mensagem de versão da API.
-  - **Resposta Esperada:**
-    ```json
-    { "message": "VISION api version 2." }
-    ```
-  - **Status Code**: 200
-
-### Rotas de Análise
-
-- **POST /v1/vision**: Analisa a emoção das faces em uma imagem.
-  - **Formato de Entrada:**
-    ```json
-    { 
-      "bucket": "myphotos", 
-      "imageName": "test-happy.jpg" 
-    }
-    ```
-  - **Formato de Saída:**
-    ```json
-    { 
-      "url_to_image": "https://myphotos/test.jpg", 
-      "created_image": "02-02-2023 17:00:00", 
-      "faces": [ 
-        { 
-          "position": { "Height": 0.063, "Left": 0.171, "Top": 0.737, "Width": 0.111 },
-          "classified_emotion": "HAPPY", 
-          "classified_emotion_confidence": 99.93 
-        } 
-      ] 
-    }
-    ```
-  - **Status Code**: 200
-
-- **POST /v2/vision**: Analisa emoções e verifica a presença de pets em uma imagem.
-  - **Formato de Entrada:**
-    ```json
-    {  
-      "bucket": "myphotos",  
-      "imageName": "labrador.jpg"  
-    }
-    ```
-  - **Formato de Saída:**
-    ```json
-    {  
-      "url_to_image": "https://mycatphotos/cat.jpg",  
-      "created_image": "02-02-2023 17:00:00",  
-      "pets": [
-        {
-          "labels": [  
-            { "Confidence": 96.59, "Name": "Animal" },  
-            { "Confidence": 96.59, "Name": "Dog" },  
-            { "Confidence": 96.59, "Name": "Pet" },  
-            { "Confidence": 96.59, "Name": "Labrador" }  
-          ],  
-          "Dicas": "Dicas sobre Labradores: Nível de Energia e Necessidades de Exercícios: Labradores são de médio nível de energia, necessitando de 40 minutos de exercício por dia. Temperamento e Comportamento: Inteligentes, enérgicos, dóceis, e com forte desejo de trabalhar com pessoas. Cuidados e Necessidades: Pelos curtos que precisam de poucos cuidados, mas devem ser penteados uma vez por semana para remover fios mortos e soltos. A alimentação deve ser adequada, ajustando a quantidade conforme o peso do cão. Problemas de Saúde Comuns: Displasia do cotovelo e coxofemoral, atrofia progressiva da retina (APR) e catarata hereditária." 
-        }
-      ]
-    }
-    ```
-  - **Status Code**: 200
 
 
 ## Estrutura do Projeto
+```bash
+/SPRINT-8-PB-AWS-MAIO/
+│
+├── assets/
+│   └── arquitetura-base.jpg
+├── visao-computacional/
+│   ├── handlers/
+│   │   ├── health_handler.py
+│   │   ├── description_handler.py
+│   │   └── analysis_handler.py
+│   ├── utils/
+│   │   ├── bedrock_utils.py
+│   │   ├── rekognition_utils.py
+│   │   └── s3_utils.py
+│   ├── .env
+│   ├── .gitignore
+│   └── serverless.yml
+├── .gitignore
+└── README.md
 
-- **handler.py**: Funções Lambda para processamento das APIs.
-- **serverless.yml**: Configuração do framework Serverless.
-- **requirements.txt**: Dependências do projeto.
+```
+
+### 5. Rotas Disponíveis
+
+Após o deploy, as seguintes rotas estarão disponíveis:
+
+- **GET /**: Verifica a saúde da aplicação.
+  
+  **Exemplo de resposta:**
+  ```json
+  {
+    "message": "Go Serverless v3.0! Your function executed successfully!",
+    "input": {...input}
+  }
+- **GET /v1**: Descrição da versão 1 da API.
+
+   **Exemplo de resposta:**
+   ```json
+   {
+      "message": "VISION api version 1."
+   }
+- **GET /v2**: Descrição da versão 2 da API.
+
+   **Exemplo de resposta:**
+   ```json
+   {
+      "message": "VISION api version 2."
+   }
+
+- **POST /v1/vision**: Análise de emoções faciais em uma imagem.
+
+   **Requerimentos:**
+   ```json
+   {
+      "bucket": "nome-do-bucket",
+      "imageName": "nome-da-imagem"
+   }
+   ```
+   **Exemplo de resposta:**
+   ```json
+   {
+      "url_to_image": "https://nome-do-bucket.s3.amazonaws.com/nome-da-imagem",
+      "created_image": "dd-mm-yyyy hh:mm:ss",
+      "faces": [
+         {
+            "position": {
+            "Height": 0.5,
+            "Left": 0.3,
+            "Top": 0.2,
+            "Width": 0.4
+            },
+            "classified_emotion": "HAPPY",
+            "classified_emotion_confidence": 99.9
+         }
+      ]
+   }
+   ```
+
+- **POST /v2/vision**: Análise de emoções faciais e detecção de pets em uma imagem, com geração de dicas.
+
+   **Requerimentos:**
+   ```json
+   {
+      "bucket": "nome-do-bucket",
+      "imageName": "nome-da-imagem"
+   }
+   ```
+   **Exemplo de resposta:**
+   ```json
+   {
+      "url_to_image": "https://nome-do-bucket.s3.amazonaws.com/nome-da-imagem",
+      "created_image": "data-e-hora-de-criação",
+      "faces": [
+            {
+               "position": {
+                  "Height": 0.1,
+                  "Left": 0.5,
+                  "Top": 0.2,
+                  "Width": 0.3
+               },
+               "classified_emotion": "HAPPY",
+               "classified_emotion_confidence": 99.9
+            }
+         ],
+      "pets": [
+            {
+               "Confidence": 98.5,
+               "Name": "Cat"
+            }
+         ],
+      "Dicas": "Aqui vão as dicas detalhadas sobre cuidados com o pet..."
+      }
+
+   ```
+   
+
+
 
 ## Observações
 
 - *Logs*: Verifique os logs no CloudWatch para depuração e validação dos resultados.
 
-## Dificuldades Conhecidas
 
+## Dificuldades Conhecidas
+- *Configuração do serverless*
 - *Configuração do AWS*: A configuração incorreta das credenciais pode levar a erros no deploy ou execução da função Lambda.
+- *Filtro de labels*: filtrar as labels referentes a animais
+- *configurações do prompt do Bedrock*
 
 
 
 ## Desenvolvedores
+## 👥 Desenvolvedores
 
-- José Luan
-- Ytollo Pereira
-- Ygor Silva
-- Naira Miriam
+- **[Ygor Silva](https://github.com/Ygor-Matos)**
+- **[Luan Fernandes](https://github.com/https-Luan-Fernandes)**
+- **[Naira Miriam](https://github.com/NairaMiriam02)**
+- **[Ytallo Pereira](https://github.com/YtalloPereira)**
+
+*Link do Repositório*: [https://github.com/Compass-pb-aws-2024-MAIO-A/sprint-8-pb-aws-maio](https://github.com/Compass-pb-aws-2024-MAIO-A/sprint-8-pb-aws-maio) 
