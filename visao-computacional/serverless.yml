@@ -34,31 +34,31 @@ provider:
 
 functions:
   health:
-    handler: handler.health
+    handler: handlers/basic_handler.health
     events:
       - httpApi:
           path: /
           method: get
   v1Description:
-    handler: handler.v1_description
+    handler: handlers/basic_handler.v1_description
     events:
       - httpApi:
           path: /v1
           method: get
   v2Description:
-    handler: handler.v2_description
+    handler: handlers/basic_handler.v2_description
     events:
       - httpApi:
           path: /v2
           method: get
   faceEmotionAnalysisV1:
-    handler: handler.face_emotion_analysis_v1
+    handler: handlers/analysis_handler.face_emotion_analysis_v1
     events:
       - httpApi:
           path: /v1/vision
           method: post
   faceAndPetAnalysisV2:
-    handler: handler.face_and_pet_analysis_v2
+    handler: handlers/analysis_handler.face_and_pet_analysis_v2
     timeout: 30
     events:
       - httpApi:
