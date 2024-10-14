@@ -240,4 +240,4 @@ Após o deploy, as seguintes rotas estarão disponíveis:
 - **[Naira Miriam](https://github.com/NairaMiriam02)**
 - **[Ytallo Pereira](https://github.com/YtalloPereira)**
 
-*Link do Repositório*: [https://github.com/Compass-pb-aws-2024-MAIO-A/sprint-8-pb-aws-maio](https://github.com/Compass-pb-aws-2024-MAIO-A/sprint-8-pb-aws-maio) 
+*Link do Repositório*: [https://github.com/YtalloPereira/computer-vision-api](https://github.com/YtalloPereira/computer-vision-api) 
