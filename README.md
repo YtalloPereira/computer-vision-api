@@ -20,7 +20,7 @@ Análise de Emoções Faciais e Detecção de Animais (v2):
 ### 1. Clonando o Repositório
 Clone o repositório do projeto para o seu ambiente local usando o comando
  bash
-git clone https://github.com/Compass-pb-aws-2024-MAIO-A/sprint-8-pb-aws-maio
+git clone https://github.com/YtalloPereira/computer-vision-api
 
 
 
